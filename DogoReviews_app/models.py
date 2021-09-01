@@ -45,11 +45,11 @@ class ReviewManager(models.Manager):
                 errors["blank"] = "Review should not be empty!"
             return errors
 class Review(models.Model):
+    review_text= models.TextField()
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
     book = models.ForeignKey(
         Book, related_name="reviews", on_delete=models.CASCADE
     )
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    review_text= models.TextField()
     rating = models.IntegerField(
         default=1, validators=[MaxValueValidator(5), MinValueValidator(1)]
     )
