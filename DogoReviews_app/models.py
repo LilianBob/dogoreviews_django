@@ -3,6 +3,7 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.utils.text import slugify
+from django.utils.safestring import mark_safe
 
 # Create your models here.
 class Book(models.Model):
@@ -27,11 +28,22 @@ class Book(models.Model):
     def save(self, *args, **kwargs):
         self.slug = slugify(self.title)
         super().save(*args, **kwargs)
+    def image_tag(self):
+        if self.image:
+            return mark_safe('<img src="%s" style="width: 200px; height:200px;" />' % self.image.url)
+        else:
+            return 'No Image Found'
+    image_tag.short_description = 'Image'
 
     def __str__(self):
         return self.title
 
-
+class ReviewManager(models.Manager):
+    def review_validator(self, postData):
+            errors = {}
+            if (len(postData['review']) < 1):
+                errors["blank"] = "Review should not be empty!"
+            return errors
 class Review(models.Model):
     book = models.ForeignKey(
         Book, related_name="reviews", on_delete=models.CASCADE
@@ -44,5 +56,7 @@ class Review(models.Model):
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     updated_at = models.DateTimeField(auto_now=True, null=True) 
 
+    objects=ReviewManager()
+    
     def __str__(self):
-        return self.review_text
+        return '{} {} {}'.format(self.book, self.user, self.rating)
