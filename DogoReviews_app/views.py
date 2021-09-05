@@ -5,8 +5,8 @@ from django.http.response import JsonResponse
 from .models import Book, Review
 from .serializers import BookSerializer
 
-def index (request):
-    return HttpResponse ('under construction...')
+# def index (request):
+#     return HttpResponse ('under construction...')
 
 @csrf_exempt
 def bookApi(request, id=0):
@@ -23,7 +23,7 @@ def bookApi(request, id=0):
         return JsonResponse("Adding failed")
     elif request.method == 'PUT':
         book_data= JSONParser().parse(request)
-        book=Book.objects.get(book=book_data['book_id'])
+        book= Book.objects.get(book=book_data['book_id'])
         book_serializer= BookSerializer(book, data=book_data)
         if book_serializer.is_valid:
             book_serializer.save()
@@ -31,6 +31,12 @@ def bookApi(request, id=0):
         return JsonResponse("Update failed")
     elif request.method == 'Delete':
         book_data= JSONParser().parse(request)
-        book=Book.objects.get(id= book_data['book_id'])
+        book= Book.objects.get(id= book_data['book_id'])
         book.delete()
         return JsonResponse("Deleted successfully", safe=False)
+@csrf_exempt
+def saveImage(request, book_id):
+    file= Book(file= request.Files['cover'], id = book_id)
+    file.save()
+    return JsonResponse("Cover file successfully added!")
+
