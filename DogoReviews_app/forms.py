@@ -5,17 +5,17 @@ from django.contrib.auth.forms import UserCreationForm
 from .models import Book, Review
 
 class SearchForm(forms.Form):
-    CATEGORY_CHOICES = [
+    GENRE_CHOICES = [
         ('F', 'Forklore'),
         ('N', 'Nonfiction'),
         ('FA', 'Fantasy'),
-        ('S', 'Biography'),
+        ('B', 'Biography'),
         ('P', 'Poetry')
     ]
     name = forms.CharField(label='book title', max_length=255, required=True)
     category = forms.ChoiceField(
-        label='Choose a Category:', 
-        widget=forms.RadioSelect, choices=CATEGORY_CHOICES,
+        label='Choose a Genre:', 
+        widget=forms.RadioSelect, choices=GENRE_CHOICES,
         required=False
     )
     

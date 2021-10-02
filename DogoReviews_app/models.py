@@ -2,39 +2,32 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.utils.text import slugify
 from django.utils.safestring import mark_safe
 
 # Create your models here.
+F='Forklore'
+N='Nonfiction'
+FA='Fantasy'
+B='Biography'
+P='Poetry'
 class Book(models.Model):
-    CATEGORY_CHOICES = [
-        ('F', 'Forklore'),
-        ('N', 'Nonfiction'),
-        ('FA', 'Fantasy'),
-        ('S', 'Biography'),
-        ('P', 'Poetry')
+    GENRE_CHOICES = [
+        (F, 'Forklore'),
+        (N, 'Nonfiction'),
+        (FA, 'Fantasy'),
+        (B, 'Biography'),
+        (P, 'Poetry')
     ]
+    bookId = models.AutoField(primary_key=True)
     title = models.CharField(max_length=255)
     description = models.TextField()
     cover = models.ImageField(upload_to="covers")
     author = models.CharField(max_length=255)
-    genre = models.CharField(max_length=255)
+    genre = models.CharField(max_length=10, choices=GENRE_CHOICES)
     pub_year = models.PositiveSmallIntegerField("Publication Year", null=True)
-    slug = models.SlugField(max_length=200)
-
+    
     class Meta:
         ordering = ["-author"]
-
-    def save(self, *args, **kwargs):
-        self.slug = slugify(self.title)
-        super().save(*args, **kwargs)
-    def image_tag(self):
-        if self.image:
-            return mark_safe('<img src="%s" style="width: 200px; height:200px;" />' % self.image.url)
-        else:
-            return 'No Image Found'
-    image_tag.short_description = 'Image'
-
     def __str__(self):
         return self.title
 

@@ -36,7 +36,7 @@ def bookApi(request, id=0):
         return JsonResponse("Deleted successfully", safe=False)
 @csrf_exempt
 def saveImage(request, book_id):
-    file= Book(file= request.Files['cover'], id = book_id)
+    file= Book(file= request.Files['cover'], id =book_id)
     file.save()
     return JsonResponse("Cover file successfully added!")
 
